@@ -56,10 +56,16 @@ int main(int argc, const char **argv) {
   TheDriver.FrontendCodeGen();
   TheDriver.runChecker();
   TheDriver.InitializePasses();
+
+  //内存到寄存器的分配
   TheDriver.addPass(createPromoteMemoryToRegisterPass());
+  //基于LLVM IR的CFG信息和支配树信息查找给定Function代码中存在的所有回边(BackEdge)，每条回边代表代码中存在的一个自然循环
   TheDriver.addPass(createLSPass());
-  TheDriver.addPass(createmyDCEPass());
+  //死代码删除,将转换为SSA格式后的LLVM IR中use_empty()返回值为真的指令从指令列表中删除(数据流分析)
+  TheDriver.addPass(createmyDCEPass()); 
+  //对当前Module所定义的函数数目进行计数(数据流分析)
   TheDriver.addPass(createmyGlobalPass());
+
   TheDriver.run();
   // TheDriver.printASTUnit();
   // Shutdown.
