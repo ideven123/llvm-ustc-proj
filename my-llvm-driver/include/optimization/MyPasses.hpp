@@ -115,6 +115,14 @@ namespace {
                 int num_of_func = 0;
                 for (llvm::Module::iterator FI = M.begin(), FE = M.end(); FI != FE; ++ FI, ++ num_of_func);
                 std::cout << "The number of functions is " << num_of_func << "." << std::endl;
+                int num_of_globalVariable = 0;
+                std::cout << "The global variables are as follows:" << std::endl;
+                for(llvm::Module::global_iterator GI = M.global_begin(), GE = M.global_end(); GI != GE; ++GI, ++num_of_globalVariable){
+                    std::cout << GI->getGlobalIdentifier() << std::endl;
+                }
+                //注意printf和scanf函数会引入全局变量，猜测应该是对应的格式化字符串
+                std::cout << "The number of global variable is " << num_of_globalVariable << "." << std::endl;
+                
                 return true;
             }
     };
