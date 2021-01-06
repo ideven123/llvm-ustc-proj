@@ -54,7 +54,9 @@ int main(int argc, const char **argv) {
   }
   
   TheDriver.FrontendCodeGen();
+
   TheDriver.runChecker();
+
   TheDriver.InitializePasses();
 
   //内存到寄存器的分配
