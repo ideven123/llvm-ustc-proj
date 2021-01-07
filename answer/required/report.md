@@ -42,7 +42,7 @@ using CFGNodePtrSet = std::set<CFGNode*>;  // 可以 存储强连通分量的结
 
 + 首先创建控制流图 。 `void build_cfg(Function &func, std::set<CFGNode *> &result)`  传入`Function` . 根据`BasicBlocks`  间的继承关系，创建控制流图，维护先驱后继结点 。
 
-+ 分解强连通分量 `bool strongly_connected_components(CFGNodePtrSet &nodes,std::set<CFGNodePtrSet *> &result)`  , 传入控制流图 。分解强连通分量，用的是`Tarjin`算法。该算法的时间复杂度较好，只有O(V+E) 。
++ 分解强连通分量 `bool strongly_connected_components(CFGNodePtrSet &nodes,std::set<CFGNodePtrSet *> &result)`  , 传入控制流图 。分解强连通分量，用的是`Tarjan`算法。该算法的时间复杂度较好，只有O(V+E) 。
 
 + 根据分解出的强连通分量，递归的分析循环 `void rec_analyse_loop(CFGNodePtrSet &result,CFGNodePtrSet reserved,int depth，std::vector<int> ith)`  第一个参数是，控制流图，第二个可用于扩展，可以存循环的base 结点 。第三个为深度 ，便于递归的时候记录当前层数,第四个ith ,记录当前循环是，当前层的第几个循环。重点解释：
 
