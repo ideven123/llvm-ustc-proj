@@ -25,11 +25,12 @@ namespace llvm {
 namespace {
     static bool DCEInstruction(Instruction *I, SmallSetVector<Instruction *, 16> &WorkList, 
         const TargetLibraryInfo * TLI) {
+        //当前指令use_empty()返回值为真 且 不是跳转指令或者返回指令(Terminator Instruction) 且 没有副作用
         if (I->use_empty() && !I->isTerminator() && !I->mayHaveSideEffects()) {
-
+            //对于该指令的每个操作数
             for (unsigned i = 0, e = I->getNumOperands(); i != e; ++i) {
-                Value *OpV = I->getOperand(i);
-                I->setOperand(i, nullptr);
+                Value *OpV = I->getOperand(i);  //OpV指向当前操作数的值
+                I->setOperand(i, nullptr);      //设置指向该操作数的指针为空
 
                 if (!OpV->use_empty() || I == OpV)
                     continue;
