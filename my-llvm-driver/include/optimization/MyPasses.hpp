@@ -118,10 +118,16 @@ namespace {
                 int num_of_globalVariable = 0;
                 std::cout << "The global variables are as follows:" << std::endl;
                 for(llvm::Module::global_iterator GI = M.global_begin(), GE = M.global_end(); GI != GE; ++GI, ++num_of_globalVariable){
-                    std::cout << GI->getGlobalIdentifier() << std::endl;
+                    //std::cout << GI->getGlobalIdentifier() << std::endl;
+                    llvm::outs() << GI->getName() << "\n";
                 }
                 //注意printf和scanf函数会引入全局变量，猜测应该是对应的格式化字符串
                 std::cout << "The number of global variable is " << num_of_globalVariable << "." << std::endl;
+                int num_of_alias = 0;
+                for(llvm::Module::alias_iterator AI = M.alias_begin(), AE = M.alias_end(); AI != AE; ++AI, num_of_alias++){
+                    llvm::outs() << AI->getName() << "\n";
+                }
+                std::cout << "The number of alias is " << num_of_alias << "." << std::endl;
                 
                 return true;
             }
