@@ -39,7 +39,9 @@
 #include <utility>
 #include <vector>
 #include <set>
-
+#include <iostream>
+#include <unordered_set>
+#include <fstream>
 using namespace llvm;
 
 #define DEBUG_TYPE "loop-search"
