@@ -68,6 +68,9 @@ int main(int argc, const char **argv) {
   //对当前Module所定义的函数数目进行计数(数据流分析)
   TheDriver.addPass(createmyGlobalPass());
 
+
+  //加入必做部分的PASS ，PASS代码 在LoopSearchPass.hpp文件中，后半部分
+  TheDriver.addPass(createLoopSearchPass());
   TheDriver.run();
   // TheDriver.printASTUnit();
   // Shutdown.
