@@ -136,18 +136,7 @@ using CFGNodePtr = CFGNode*;
 using CFGNodePtrSet = std::unordered_set<CFGNode*>;
 using BBset_t = std::unordered_set<BasicBlock *>;
     int index_count;
-    bool dump;
     std::vector<CFGNodePtr> stack;
-    // loops found
-    std::unordered_set<BBset_t *> loop_set;
-    // loops found in a function
-    std::unordered_map<Function *, std::unordered_set<BBset_t *>> func2loop;
-    // { entry bb of loop : loop }
-    std::unordered_map<BasicBlock *, BBset_t *> base2loop;
-    // { loop : entry bb of loop }
-    std::unordered_map<BBset_t *, BasicBlock *> loop2base;
-    // { bb :  entry bb of loop} 默认最低层次的loop
-    std::unordered_map<BasicBlock *, BasicBlock *> bb2base;
 
 void build_cfg(Function &func, std::unordered_set<CFGNode *> &result){
     std::unordered_map<BasicBlock *, CFGNode *> bb2cfg_node;
@@ -345,7 +334,9 @@ void rec_analyse_loop(CFGNodePtrSet &result,CFGNodePtrSet reserved,int depth,std
       return false;
     CFGNodePtrSet nodes;
     CFGNodePtrSet reserved;
+    llvm::outs()<<"Processing function  "<<F.getName()<<","<<" loop message is as follow \n{\n";
     analyseloop(F, nodes);
+    llvm::outs()<<"}\n" ;
     return true;
   }
   
