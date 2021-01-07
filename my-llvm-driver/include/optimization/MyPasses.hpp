@@ -129,7 +129,15 @@ namespace {
                     llvm::outs() << AI->getName() << "\n";
                 }
                 std::cout << "The number of alias is " << num_of_alias << "." << std::endl;
-                
+                /*
+                int num_of_named_metadata = 0;
+                for(llvm::Module::named_metadata_iterator NI = M.named_metadata_begin(), NE = M.named_metadata_end(); NI != NE; ++NI, num_of_named_metadata++){
+                    llvm::outs() << NI->getName() << "\n";
+                }
+                std::cout << "The number of named metadata is " << num_of_named_metadata << "." << std::endl;
+                */
+
+                //llvm::outs() << Module::getInstructionCount() << "\n";
                 return true;
             }
     };

@@ -1,10 +1,8 @@
-#include<stdio.h>
-
-typedef struct lll{
+class temp{
     int a;
     int b;
     int c;
-}temp;
+};
 
 temp pqz;
 temp other;
