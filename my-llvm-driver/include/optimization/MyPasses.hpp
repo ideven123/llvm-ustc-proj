@@ -131,11 +131,12 @@ namespace {
                 }
                 //注意printf和scanf函数会引入全局变量，猜测应该是对应的格式化字符串
                 std::cout << "The number of global variable is " << num_of_globalVariable << "." << std::endl;
+                /*
                 int num_of_alias = 0;
                 for(llvm::Module::alias_iterator AI = M.alias_begin(), AE = M.alias_end(); AI != AE; ++AI, num_of_alias++){
                     llvm::outs() << AI->getName() << "\n";
                 }
-                std::cout << "The number of alias is " << num_of_alias << "." << std::endl;
+                std::cout << "The number of alias is " << num_of_alias << "." << std::endl;*/
                 /*
                 int num_of_named_metadata = 0;
                 for(llvm::Module::named_metadata_iterator NI = M.named_metadata_begin(), NE = M.named_metadata_end(); NI != NE; ++NI, num_of_named_metadata++){

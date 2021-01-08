@@ -16,6 +16,7 @@
 #include "Driver/driver.h"
 #include "optimization/LoopSearchPass.hpp"
 #include "optimization/MyPasses.hpp"
+#include "optimization/FuncInfo.hpp"
 using namespace llvm;
 using namespace clang;
 using namespace mDriver;
@@ -71,6 +72,7 @@ int main(int argc, const char **argv) {
 
   //加入必做部分的PASS，PASS代码 在LoopSearchPass.hpp文件中，后半部分
   TheDriver.addPass(createLoopSearchPass());
+  TheDriver.addPass(createFuncInfoPass());
   TheDriver.run();
   // TheDriver.printASTUnit();
   // Shutdown.
