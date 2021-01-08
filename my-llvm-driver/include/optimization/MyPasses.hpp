@@ -24,7 +24,7 @@ namespace llvm {
 
 namespace {
     static bool DCEInstruction(Instruction *I, SmallSetVector<Instruction *, 16> &WorkList, 
-        const TargetLibraryInfo * TLI) {
+        const TargetLibraryInfo * TLI) {//根据规则判断一个指令是否是死代码
         if (I->use_empty() && !I->isTerminator() && !I->mayHaveSideEffects()) {
 
             for (unsigned i = 0, e = I->getNumOperands(); i != e; ++i) {
@@ -36,7 +36,7 @@ namespace {
 
                 if (Instruction *OpI = dyn_cast<Instruction>(OpV))
                     if (isInstructionTriviallyDead(OpI, TLI))
-                        WorkList.insert(OpI);
+                        WorkList.insert(OpI);//插入到WorkList
             }
             I->print(llvm::outs());
             std::cout << " " << I->getOpcodeName() << std::endl;
@@ -50,7 +50,7 @@ namespace {
         bool MadeChange = false;
         SmallSetVector<Instruction *, 16> WorkList;
         std::cout << "The Elimated Instructions: {" << std::endl;
-        for (inst_iterator FI = inst_begin(F), FE = inst_end(F); FI != FE;) {
+        for (inst_iterator FI = inst_begin(F), FE = inst_end(F); FI != FE;) {//对function里的每条语句迭代，看其是不是死代码
             Instruction *I = &*FI;
             ++FI;
 

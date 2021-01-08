@@ -24,7 +24,7 @@ class Driver {
 private:
     cDriver _TheDriver;
     bool _show_ir_after_pass = false;
-    std::string _OutFile = "";
+    std::string _OutFile = "";//输出文件名
     SVec _Args;
     std::unique_ptr<driver::Compilation> _C;
     clang::CompilerInstance _Clang;
