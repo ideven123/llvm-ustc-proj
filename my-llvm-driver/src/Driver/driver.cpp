@@ -54,7 +54,7 @@ Driver::Driver(StringRef ClangExecutable, StringRef TargetTriple,
     llvm::outs() << "Driver \""<< _TheDriver.DriverTitle <<  "\" Created Successfully! \n";
 }
 
-bool Driver::ParseArgs(SVec &Args) {
+bool Driver::ParseArgs(SVec &Args) {//对命令行参数作解析
     _show_ir_after_pass = false;
     if(_Args.size()){
         _Args.clear();
@@ -80,13 +80,13 @@ bool Driver::ParseArgs(SVec &Args) {
     return true;
 }
 
-bool Driver::BuildCI(DiagnosticsEngine &Diags) {
+bool Driver::BuildCI(DiagnosticsEngine &Diags) {//DiagnosticsEngine：做一些warnings and errors 的诊断
     _C.reset(_TheDriver.BuildCompilation(_Args));
     assert(_C && "Compilation build failed!");
     auto &Jobs = _C->getJobs();
     if (Jobs.size() != 1 || !isa<driver::Command>(*Jobs.begin())) {
         SmallString<256> Msg;
-        llvm::raw_svector_ostream OS(Msg);
+        llvm::raw_svector_ostream OS(Msg);//llvm提供的写入SmallString和SmallVector的流
         Jobs.Print(OS, "; ", true);
         Diags.Report(diag::err_fe_expected_compiler_job) << OS.str();
         return false;
@@ -154,7 +154,7 @@ bool Driver::runChecker() {
     }
 }
 
-void Driver::addPass(FunctionPass *_p){
+void Driver::addPass(FunctionPass *_p){//function
     _FPM->add(_p);
     if(_show_ir_after_pass){
         auto pass_name = _p->getPassName().str();
@@ -166,7 +166,7 @@ void Driver::addPass(FunctionPass *_p){
     }
 }
 
-void Driver::addPass(ModulePass *_p){
+void Driver::addPass(ModulePass *_p){ //module
     _PM->add(_p);
     if(_show_ir_after_pass){
         auto pass_name = _p->getPassName().str();
@@ -184,7 +184,7 @@ void Driver::run(){
         return;
     }
     set_func_attr(_M.get());
-    _FPM->doInitialization();
+    _FPM->doInitialization();//初始化所有functionpass
     for(auto sF = _M->begin(), eF = _M->end();sF != eF;++sF){
         _FPM->run(*sF);
     }

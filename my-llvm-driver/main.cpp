@@ -43,7 +43,7 @@ int main(int argc, const char **argv) {
       exit(1);
   }
   llvm::outs() << "Use clang: " <<  (*ClangPath).c_str() << "\n";
-  Driver TheDriver(StringRef((*ClangPath).c_str()), T.str(), Diags);
+  Driver TheDriver(StringRef((*ClangPath).c_str()), T.str(), Diags);//新建driver
   SmallVector<const char *, 16> Args(argv, argv + argc);
   Args.push_back("-fsyntax-only");
   if(TheDriver.ParseArgs(Args) && TheDriver.BuildCI(Diags)){
