@@ -69,7 +69,7 @@ int main(int argc, const char **argv) {
   TheDriver.addPass(createmyGlobalPass());
 
 
-  //加入必做部分的PASS ，PASS代码 在LoopSearchPass.hpp文件中，后半部分
+  //加入必做部分的PASS，PASS代码 在LoopSearchPass.hpp文件中，后半部分
   TheDriver.addPass(createLoopSearchPass());
   TheDriver.run();
   // TheDriver.printASTUnit();

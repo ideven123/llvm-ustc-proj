@@ -1,5 +1,7 @@
 
 
+[toc]
+
 # 必做部分实验报告
 
 ## 基于[Driver](https://gitee.com/s4plus/llvm-ustc-proj/blob/master/my-llvm-driver/include/Driver/driver.h#L23)的循环分析器
@@ -28,7 +30,7 @@ struct CFGNode  //控制流图的结点
     std::unordered_set<CFGNode *> prevs;  //前驱结点集合
     BasicBlock *bb;                //基本快
     int index;   // the index of the node in CFG
-    int lowlink; // the min index of the node in the strongly connected componets //一个用于计算强联通分量的量 。
+    int lowlink; // the min index of the node in the strongly connected componets //一个用于计算强联通分量的量
     bool onStack; //用于计算强连通分量
 };
 
@@ -40,7 +42,7 @@ using CFGNodePtrSet = std::set<CFGNode*>;  // 可以 存储强连通分量的结
 
 + 首先创建控制流图 。 `void build_cfg(Function &func, std::set<CFGNode *> &result)`  传入`Function` . 根据`BasicBlocks`  间的继承关系，创建控制流图，维护先驱后继结点 。
 
-+ 分解强连通分量 `bool strongly_connected_components(CFGNodePtrSet &nodes,std::set<CFGNodePtrSet *> &result)`  , 传入控制流图 。分解强连通分量，用的是Tarjin 算法。该算法的时间复杂度较好，只有O(V+E) 。
++ 分解强连通分量 `bool strongly_connected_components(CFGNodePtrSet &nodes,std::set<CFGNodePtrSet *> &result)`  , 传入控制流图 。分解强连通分量，用的是`Tarjan`算法。该算法的时间复杂度较好，只有O(V+E) 。
 
 + 根据分解出的强连通分量，递归的分析循环 `void rec_analyse_loop(CFGNodePtrSet &result,CFGNodePtrSet reserved,int depth，std::vector<int> ith)`  第一个参数是，控制流图，第二个可用于扩展，可以存循环的base 结点 。第三个为深度 ，便于递归的时候记录当前层数,第四个ith ,记录当前循环是，当前层的第几个循环。重点解释：
 
@@ -206,12 +208,9 @@ using CFGNodePtrSet = std::set<CFGNode*>;  // 可以 存储强连通分量的结
 ### 实验总结
 
 1. 用强连通分量，分析循环是一种直观的方法，且采用Tarjin算法分解强连通分量的时间复杂度并不高只有O(V+E) 。但是在递归分析循环的时候，需要在去掉base结点后重新分解强连通分量，实则是一种浪费。
-2. 本实验，在`BasicBlock` 层面的控制流图上 ，又包装了一层`CFGNode`，然后在`CFGNode` 的层面上再创建控制流图， 这是为了给 分解强连通分量提供一些信息 ，` int index;  `,`   int lowlink;`,`bool onStack; ` .
-3. ~~从支配树上分析循环，或许会效率更高。~~
+2. 本实验，在`BasicBlock` 层面的控制流图上 ，又包装了一层`CFGNode`，然后在`CFGNode` 的层面上再创建控制流图， 这是为了给 分解强连通分量提供一些信息 ，` int index;  `,`   int lowlink;`,`bool onStack` 
 
 ## 思考题
-
-# 思考题
 
 请解释FindFunctionBackedges函数中InStack变量的物理意义（例如Visited变量的物理意义为存储已访问的BB块集合、VisitStack变量的物理意义为栈中待处理的边集合）
 
@@ -260,7 +259,7 @@ void llvm::FindFunctionBackedges(const Function &F,
       InStack.insert(BB);	//记录当前BB
       VisitStack.push_back(std::make_pair(BB, succ_begin(BB)));	//标记当前边待处理
     } else {
-      // Go up one level.回溯
+      // Go up one level 回溯
       InStack.erase(VisitStack.pop_back_val().first);	//从InStack中删除对应部分
     }
   } while (!VisitStack.empty());

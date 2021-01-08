@@ -23,47 +23,55 @@ namespace llvm {
 }
 
 namespace {
+    //判断I是否为死代码，如果是，则将其加入WorkList并返回真，否则返回假
     static bool DCEInstruction(Instruction *I, SmallSetVector<Instruction *, 16> &WorkList, 
-        const TargetLibraryInfo * TLI) {//根据规则判断一个指令是否是死代码
+        const TargetLibraryInfo * TLI) {
+        //当前指令use_empty()返回值为真 且 不是跳转指令或者返回指令 且 没有副作用
+        //Terminator Instruction--In LLVM, a BasicBlock will always end with a TerminatorInst. 
+        //TerminatorInsts cannot appear anywhere else other than at the end of a BasicBlock.
+        //对于一个Instruction *I，I指向的是该指令的%开头的左值，其右值有三种情况：1.常数 2.@开头的全局变量 3.%开头的局部变量
         if (I->use_empty() && !I->isTerminator() && !I->mayHaveSideEffects()) {
-
+            //对于该指令的每个操作数（右值）
             for (unsigned i = 0, e = I->getNumOperands(); i != e; ++i) {
-                Value *OpV = I->getOperand(i);
-                I->setOperand(i, nullptr);
+                Value *OpV = I->getOperand(i);  //OpV为指向当前操作数的指针
+                I->setOperand(i, nullptr);      //设置指向该操作数的指针为空??
 
-                if (!OpV->use_empty() || I == OpV)
-                    continue;
+                if (!OpV->use_empty() || I == OpV)  //如果该操作数use_empty()返回值为假 或 指令的左值为当前操作数
+                    continue;                       //进入下一轮循环
 
-                if (Instruction *OpI = dyn_cast<Instruction>(OpV))
-                    if (isInstructionTriviallyDead(OpI, TLI))
-                        WorkList.insert(OpI);//插入到WorkList
+                if (Instruction *OpI = dyn_cast<Instruction>(OpV))  //如果该操作数不符合前面if的条件，且可以动态转换为对应的IR指令（也就是说它是%开头的）
+                    if (isInstructionTriviallyDead(OpI, TLI))   //如果这条指令产生的该值没被使用过且这个指令没有其他影响
+                        WorkList.insert(OpI);           //将该指令插入WorkList
             }
-            I->print(llvm::outs());
-            std::cout << " " << I->getOpcodeName() << std::endl;
-            I->eraseFromParent();
-            return true;
+            //print:将对象格式化到指定的缓冲区。如果成功，将返回格式化字符串的长度。如果缓冲区太小，则返回一个大于BufferSize的长度以供重试。
+            I->print(llvm::outs()); //??
+            std::cout << " " << I->getOpcodeName() << std::endl;    //输出该指令的操作码
+            I->eraseFromParent();                                   //将该指令从包含它的基本块中解除链接并删除它
+            return true;    //成功删除一条死代码,返回真
         }
-        return false;
+        return false;   //否则返回假
     }
-
+    //根据当前可用的库函数的信息，删除函数F中的死代码
     static bool eliminateDeadCode(Function &F, TargetLibraryInfo *TLI) {
         bool MadeChange = false;
         SmallSetVector<Instruction *, 16> WorkList;
         std::cout << "The Elimated Instructions: {" << std::endl;
-        for (inst_iterator FI = inst_begin(F), FE = inst_end(F); FI != FE;) {//对function里的每条语句迭代，看其是不是死代码
+        //遍历F中的每一条指令，找到其中的死代码并加入WorkList
+        for (inst_iterator FI = inst_begin(F), FE = inst_end(F); FI != FE;) {
             Instruction *I = &*FI;
             ++FI;
 
-            if (!WorkList.count(I))
-            MadeChange |= DCEInstruction(I, WorkList, TLI);
+            if (!WorkList.count(I)) //如果I不在WorkList中
+            MadeChange |= DCEInstruction(I, WorkList, TLI); //判断I是否为死代码，如果是则加入WorkList并将MadeChange置为真
         }
 
-        while (!WorkList.empty()) {
+        //WorkList相当于一个栈，现在从栈顶开始，判断I是否为死代码，如果是则加入WorkList并将MadeChange置为真
+        while (!WorkList.empty()) { 
             Instruction *I = WorkList.pop_back_val();
             MadeChange |= DCEInstruction(I, WorkList, TLI);
         }
         std::cout << "}" << std::endl;
-        return MadeChange;
+        return MadeChange;  //返回MadeChange，表示IR是否发生变化
     }
 
     struct myDCEPass : public FunctionPass {
@@ -128,7 +136,15 @@ namespace {
                     llvm::outs() << AI->getName() << "\n";
                 }
                 std::cout << "The number of alias is " << num_of_alias << "." << std::endl;
-                
+                /*
+                int num_of_named_metadata = 0;
+                for(llvm::Module::named_metadata_iterator NI = M.named_metadata_begin(), NE = M.named_metadata_end(); NI != NE; ++NI, num_of_named_metadata++){
+                    llvm::outs() << NI->getName() << "\n";
+                }
+                std::cout << "The number of named metadata is " << num_of_named_metadata << "." << std::endl;
+                */
+
+                //llvm::outs() << Module::getInstructionCount() << "\n";
                 return true;
             }
     };
