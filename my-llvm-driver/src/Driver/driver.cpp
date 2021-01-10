@@ -14,6 +14,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/InitializePasses.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
+#include "llvm/Analysis/LoopPass.h"
 
 #include "Driver/driver.h"
 #include "Checker/myAnalysisAction.h"
@@ -175,6 +176,20 @@ void Driver::addPass(ModulePass *_p){ //module
         std::error_code _err;
         raw_fd_ostream* outfile = new raw_fd_ostream(StringRef(PassName), _err);
         _PM->add(_p->createPrinterPass(*outfile, ""));
+    }
+}
+
+//pqz
+void Driver::addPass(LoopPass *_p){ //loop
+    _LPPM->add(_p);
+    if (_show_ir_after_pass)
+    {
+        auto pass_name = _p->getPassName().str();
+        std::replace(pass_name.begin(), pass_name.end(), ' ', '_');
+        std::string PassName = pass_name + "_" + std::to_string(_PassID++) + ".ll";
+        std::error_code _err;
+        raw_fd_ostream *outfile = new raw_fd_ostream(StringRef(PassName), _err);
+        _LPPM->add(_p->createPrinterPass(*outfile, ""));
     }
 }
 

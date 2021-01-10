@@ -4,7 +4,12 @@ int getint(){
     scanf("%d", &n);
     return n;
 }
+int getfloat(){
+    printf("char\n");
+    return 0;
+}
 int main(){
     int x = getint();
-    return x;
+    int y = getfloat();
+    return 0;
 }

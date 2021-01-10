@@ -16,6 +16,9 @@
 #include "Driver/driver.h"
 #include "optimization/LoopSearchPass.hpp"
 #include "optimization/MyPasses.hpp"
+#include "optimization/FuncInfo.hpp"
+#include "optimization/LocalOpts.hpp"
+#include "optimization/ActiveVars.hpp"
 using namespace llvm;
 using namespace clang;
 using namespace mDriver;
@@ -63,6 +66,7 @@ int main(int argc, const char **argv) {
   TheDriver.addPass(createPromoteMemoryToRegisterPass());
   //基于LLVM IR的CFG信息和支配树信息查找给定Function代码中存在的所有回边(BackEdge)，每条回边代表代码中存在的一个自然循环
   TheDriver.addPass(createLSPass());
+  TheDriver.addPass(llvm::createConstantPropagationPass());
   //死代码删除,将转换为SSA格式后的LLVM IR中use_empty()返回值为真的指令从指令列表中删除(数据流分析)
   TheDriver.addPass(createmyDCEPass()); 
   //对当前Module所定义的函数数目进行计数(数据流分析)
@@ -71,6 +75,9 @@ int main(int argc, const char **argv) {
 
   //加入必做部分的PASS，PASS代码 在LoopSearchPass.hpp文件中，后半部分
   TheDriver.addPass(createLoopSearchPass());
+  TheDriver.addPass(createFuncInfoPass());
+  TheDriver.addPass(createLocalOptsPass());
+  TheDriver.addPass(createLivenessPass());
   TheDriver.run();
   // TheDriver.printASTUnit();
   // Shutdown.

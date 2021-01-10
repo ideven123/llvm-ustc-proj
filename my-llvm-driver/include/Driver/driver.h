@@ -11,6 +11,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/Pass.h"
 #include "llvm/IR/LegacyPassManager.h"
+#include "llvm/Analysis/LoopPass.h"
 #include <string>
 using namespace llvm;
 using namespace clang;
@@ -35,6 +36,7 @@ private:
     PassRegistry* _PassRegistry;
     std::unique_ptr<legacy::PassManager> _PM;
     std::unique_ptr<legacy::FunctionPassManager> _FPM;
+    std::unique_ptr<llvm::LPPassManager> _LPPM; //pqz
 
 public:
     Driver(StringRef ClangExecutable, StringRef TargetTriple,
@@ -45,6 +47,7 @@ public:
     bool FrontendCodeGen();
     bool runonFunction();
     bool runonmodule();
+    bool runonLoop();   //pqz
 
     bool runChecker();
 
@@ -52,6 +55,8 @@ public:
     void InitializePasses();
     void addPass(FunctionPass*);
     void addPass(ModulePass*);
+    void addPass(LoopPass *); //pqz
+
     void run();
 };
 
