@@ -34,14 +34,13 @@ namespace{
         std::map<BasicBlock *, std::set<Value *>> live_in, live_out;
         std::map<BasicBlock *, std::set<Value *>> defB, useB;
         std::set<Value *> tmpDef;//暂存已经分析过的块中指令的定值变量
-        //std::unordered_set <Value *> _domain;//存放各条指令的参数
         static char ID;
         Liveness() : FunctionPass(ID) {
             initializeLivenessPass(*PassRegistry::getPassRegistry());
         }
 
         bool runOnFunction(llvm::Function & F) override{
-            llvm::outs()<<"run begin\n";
+            llvm::outs()<<"activevar pass run begin\n";
             if (skipFunction(F)) {
                 return false;
             }
@@ -49,45 +48,50 @@ namespace{
             live_out.clear();
             defB.clear();
             useB.clear();
-            //phiUseB.clear();
-            //phiOutB.clear();
-            /*
-            _domain.clear();
-            for (const auto & inst : instructions(F)){
-                for(auto iter = inst.op_begin(); iter != inst.op_end(); iter++)//对每条指令，将左值或参数存入_domain中
-                    if (isa < Instruction > (*iter) || isa < Argument > (*iter))
-                        _domain.insert(*iter);
-            }
-            */
+
             //先初始化函数所有基本块的use和def集合
             for (BasicBlock &bb : F) {
                 tmpDef.clear();
                 for (Instruction &instr : bb) {//从基本块第一条指令开始遍历
-                    //Instruction *instr = &*FI;
                     for(auto iter = instr.op_begin(); iter != instr.op_end(); iter++){//遍历一条指令的操作数(等式右边的)
-                        Value* val = dyn_cast<Value>(*iter);//若该指令不为常量，则返回指针，否则返回NULL
-                        llvm::outs()<<val->getName()<<", ";
-                        if(val==NULL) continue;//该操作数为常量等，不考虑
+                        if(auto *A1=dyn_cast<ConstantFP>(*iter)){//若该指令为常数
+                            //llvm::outs()<<" pass ";
+                            continue;
+                        }
+                        else if(auto *A2=dyn_cast<ConstantInt>(*iter)){
+                            //llvm::outs()<<" pass ";
+                            continue;
+                        }
+                        Value* val = dyn_cast<Value>(*iter);
+                        //val->printAsOperand(llvm::outs(),false);
                         auto t=val->getType();
-                        if(!t->isFunctionTy() && !t->isLabelTy() && tmpDef.find(val)==tmpDef.end()){//该操作数不是label,不是函数名,且在该引用前B中无定值,则加入use集合
+                        //llvm::outs()<<" typeid: "<<t->getTypeID();
+                        //llvm::outs()<<", ";
+                        //if(t->isFunctionTy()) llvm::outs()<<"functype ";
+                        //if(t->isLabelTy()) llvm::outs()<<"labeltype ";
+                        if(!t->isPointerTy() && !t->isLabelTy() && tmpDef.find(val)==tmpDef.end()){//该操作数不是label,不是函数名,且在该引用前B中无定值,则加入use集合
                             useB[&bb].insert(val);
                         }
-                        
                     }
-                    llvm::outs()<<"\n"<<instr.getName()<<",\n";
+                    //llvm::outs()<<"\n"<<instr.getOpcode()<<"\n";
+                    //instr.printAsOperand(llvm::outs(),false);
+                    //llvm::outs()<<",\n";
                     Value* Lval=dyn_cast<Value>(&instr);
-                    if(Lval!=NULL){//是等式左边参数，则加入def集合
+                    //if(isa<PHINode>(instr) || instr.isBinaryOp() || isa<LoadInst>(instr)){//是等式左边参数，则加入def集合
+                    if(!instr.isTerminator() && !instr.isIndirectTerminator() && !instr.isExceptionalTerminator()){
                         defB[&bb].insert(Lval);
                         tmpDef.insert(Lval);//加入用于判断useB
                     }
                 }
                 llvm::outs()<<"\nuseB:\n";
                 for (auto v = useB[&bb].begin(); v != useB[&bb].end(); v++) {
-                    llvm::outs()<< (*v)->getName()<<", " ;       
+                    (*v)->printAsOperand(llvm::outs(),false);
+                    llvm::outs()<< ", " ;       
                 }
                 llvm::outs()<<"\ndefB:\n";
                 for (auto v = defB[&bb].begin(); v != defB[&bb].end(); v++) {
-                    llvm::outs()<< (*v)->getName()<<", " ;       
+                    (*v)->printAsOperand(llvm::outs(),false);
+                    llvm::outs()<<", " ;       
                 }
                 llvm::outs()<<"\n\n";
             }
@@ -97,7 +101,7 @@ namespace{
             while(change){
                 change = false;
                 iteration++;
-                llvm::outs()<<iteration<<"\n";
+                //llvm::outs()<<iteration<<"\n";
                 for(BasicBlock &bb : F){//遍历每一个基本块
                     //计算OUT[B]
                     auto tmpIn = live_in[&bb];//用于比较在该次迭代前后是否有基本块的IN集合发生变化
@@ -154,19 +158,25 @@ namespace{
             llvm::outs()<<"function  "<<F.getName()<<": \n";
             llvm::outs()<<"active vars : \nIN:\n";
             for (BasicBlock &bb : F) {
-                llvm::outs()<<"label "<<bb.getName()<<" ";
+                llvm::outs()<<"label ";
+                bb.printAsOperand(llvm::outs(),false);
+                llvm::outs()<<" ";
                 llvm::outs()<<"[ ";
                 for (std::set<Value*>::iterator v = live_in[&bb].begin(); v != live_in[&bb].end(); v++) {
-                    llvm::outs()<<(*v)->getName()<<" , ";
+                    (*v)->printAsOperand(llvm::outs(),false);
+                    llvm::outs()<<" , ";
                 }
                 llvm::outs()<<" ]\n";
             }
             llvm::outs()<<"\nOUT:\n";
             for (BasicBlock &bb : F) {
-                llvm::outs()<<"label "<<bb.getName()<<" ";
+                llvm::outs()<<"label ";
+                bb.printAsOperand(llvm::outs(),false);
+                llvm::outs()<<" ";
                 llvm::outs()<<"[ ";
                 for (std::set<Value*>::iterator v = live_out[&bb].begin(); v != live_out[&bb].end(); v++) {
-                    llvm::outs()<<(*v)->getName()<<" , ";
+                    (*v)->printAsOperand(llvm::outs(),false);
+                    llvm::outs()<<" , ";
                 }
                 llvm::outs()<<" ]\n";
             }
