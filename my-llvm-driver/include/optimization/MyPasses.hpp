@@ -34,7 +34,7 @@ namespace {
             //对于该指令的每个操作数（右值）
             for (unsigned i = 0, e = I->getNumOperands(); i != e; ++i) {
                 Value *OpV = I->getOperand(i);  //OpV为指向当前操作数的指针
-                I->setOperand(i, nullptr);      //设置指向该操作数的指针为空??
+                I->setOperand(i, nullptr);      //设置指向该操作数的指针为空??getOperandList()[i] = nullptr;
 
                 if (!OpV->use_empty() || I == OpV)  //如果该操作数use_empty()返回值为假 或 指令的左值为当前操作数
                     continue;                       //进入下一轮循环
