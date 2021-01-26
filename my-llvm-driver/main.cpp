@@ -68,7 +68,8 @@ int main(int argc, const char **argv) {
   TheDriver.addPass(createLSPass());
   TheDriver.addPass(llvm::createConstantPropagationPass());
   //死代码删除,将转换为SSA格式后的LLVM IR中use_empty()返回值为真的指令从指令列表中删除(数据流分析)
-  TheDriver.addPass(createmyDCEPass()); 
+  //TheDriver.addPass(createmyDCEPass()); 
+  
   //对当前Module所定义的函数数目进行计数(数据流分析)
   TheDriver.addPass(createmyGlobalPass());
 
