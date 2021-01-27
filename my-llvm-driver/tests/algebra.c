@@ -27,5 +27,6 @@ int main()
 
     int val3_1 = x + 1;
     int val3_2 = val3_1 - 1;
+    int val3_3 = val3_2 + 8;
     return 0;
 }

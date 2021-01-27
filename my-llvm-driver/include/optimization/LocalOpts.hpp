@@ -213,7 +213,7 @@ namespace
                     //减法指令
                     case Instruction::Sub:
                         std::cout << "is sub" << std::endl;
-                        // b = a + 1(another inst); c = b - 1(inst)  ==>  b = a + 1; c = a;
+                        // b = a + 1(another inst); c = b - 1(inst)  ==>  b = a + 1
                         if (ConstantInt *val = dyn_cast<ConstantInt>(inst.getOperand(1)))
                         {
                             std::cout << "Yes1" << std::endl;
@@ -303,7 +303,7 @@ namespace
                                 //创建一条IR
                                 IRBuilder<> builder(&inst);
                                 //创建val(inst的基类),这是算术右移指令
-                                Value *val = builder.CreateShl(first_val, 1);
+                                Value *val = builder.CreateAShr(first_val, 1);
                                 //将inst的出现替换为val
                                 inst.replaceAllUsesWith(val);
                                 //将inst加入待删除列表
