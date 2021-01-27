@@ -20,13 +20,6 @@ namespace
         }
          ~FunctionInfo() override {}
 
-        // We don't modify the program, so we preserve all analysis.
-        /*
-        void getAnalysisUsage(AnalysisUsage &AU) const override
-        {
-            AU.setPreservesAll();
-        }*/
-
         bool runOnModule(llvm::Module &M) override
         {
             llvm::outs() << "Functions Information Pass" << "\n";
