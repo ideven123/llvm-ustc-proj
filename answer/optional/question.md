@@ -87,12 +87,13 @@
 1）简述`skipModule()`的功能
 
 2）请扩展增加对Module中类型定义、全局变量定义等的统计和输出
-（张昱老师和刘硕助教：类型定义指--类的定义和类型别名，如`typedef struct`）
+（张昱老师和刘硕助教：类型定义指形如`typedef struct`）
 
 ***
 
 1. 该函数检查是否跳过可选的passes。如果`optimization bisect`超过了限制，则可选的passes会被跳过，`runOnModule`方法直接返回`false`
 
-2. 全局变量定义 finished
-
-   类型定义 to-do
+2. 全局变量定义 
+   输出了全局变量的名称和数量
+   类型定义 
+   输出了类型定义的名称和数量

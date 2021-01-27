@@ -1,15 +1,32 @@
 #include<stdio.h>
 
-typedef struct lll{
+typedef struct stu1{
     int a;
     int b;
     int c;
-}temp;
+}temp1;
 
-temp pqz;
-temp other;
+typedef struct stu2
+{
+    int a;
+    int b;
+    int c;
+}temp2;
 
-int main(){
-    temp b;
+typedef struct stu3
+{
+    int a;
+    int b;
+    int c;
+} temp3;
+
+
+temp1 t1;
+temp2 t2;
+temp3 t3;
+
+int main()
+{
+    temp1 b;
     return 0;
 }
