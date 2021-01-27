@@ -81,6 +81,7 @@ int main(int argc, const char **argv) {
   TheDriver.addPass(createFuncInfoPass());
   TheDriver.addPass(createLocalOptsPass());
   TheDriver.addPass(createLivenessPass());
+  TheDriver.addPass(createGetAvailExpr());
   TheDriver.run();
   // TheDriver.printASTUnit();
   // Shutdown.
