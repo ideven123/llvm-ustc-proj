@@ -14,10 +14,12 @@ int main()
     int val3_2 = val3_1 - 1;
     */
    
-    int x = -1;
-    if (x < 0)
-        x = 2;
     
+    int x = 1;
+    if(x < 0){
+        x = 2;
+    }
+
     int val1_1 = x + 0;
     int val1_2 = x * 1;
     int val2_1 = 2 * x;
@@ -25,6 +27,5 @@ int main()
 
     int val3_1 = x + 1;
     int val3_2 = val3_1 - 1;
-    
     return 0;
 }

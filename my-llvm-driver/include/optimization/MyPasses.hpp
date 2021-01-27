@@ -131,10 +131,11 @@ namespace {
                 }
                 //注意printf和scanf函数会引入全局变量，猜测应该是对应的格式化字符串
                 std::cout << "The number of global variable is " << num_of_globalVariable << "." << std::endl;
+                std::cout << "The type alias are as follows:" << std::endl;
                 for(auto i : M.getIdentifiedStructTypes()){
                     llvm::outs() << i->getStructName() << "\n";
                 }
-                std::cout << "The number of alias is " << M.getIdentifiedStructTypes().size() << "." << std::endl;
+                std::cout << "The number of type alias is " << M.getIdentifiedStructTypes().size() << "." << std::endl;
                 return true;
             }
     };
