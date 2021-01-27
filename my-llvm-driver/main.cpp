@@ -19,6 +19,7 @@
 #include "optimization/FuncInfo.hpp"
 #include "optimization/LocalOpts.hpp"
 #include "optimization/ActiveVars.hpp"
+#include "optimization/Loopinvhoist.hpp"
 using namespace llvm;
 using namespace clang;
 using namespace mDriver;
@@ -65,6 +66,7 @@ int main(int argc, const char **argv) {
   //内存到寄存器的分配
   TheDriver.addPass(createPromoteMemoryToRegisterPass());
   //基于LLVM IR的CFG信息和支配树信息查找给定Function代码中存在的所有回边(BackEdge)，每条回边代表代码中存在的一个自然循环
+  TheDriver.addPass(createLoopInvHoistPass());
   TheDriver.addPass(createLSPass());
   TheDriver.addPass(llvm::createConstantPropagationPass());
   //死代码删除,将转换为SSA格式后的LLVM IR中use_empty()返回值为真的指令从指令列表中删除(数据流分析)
