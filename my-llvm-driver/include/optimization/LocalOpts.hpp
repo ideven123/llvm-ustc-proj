@@ -216,14 +216,14 @@ namespace
                         // b = a + 1(another inst); c = b - 1(inst)  ==>  b = a + 1
                         if (ConstantInt *val = dyn_cast<ConstantInt>(inst.getOperand(1)))
                         {
-                            std::cout << "Yes1" << std::endl;
+                            //std::cout << "Yes1" << std::endl;
                             if (Instruction *another_inst = dyn_cast<Instruction>(inst.getOperand(0)))
                             {
-                                std::cout << "Yes2" << std::endl;
+                                //std::cout << "Yes2" << std::endl;
                                 // 如果这两条指令刚好一加一减，同时第二个操作数是一样的
                                 if (inst.getOpcode() + another_inst->getOpcode() == Instruction::Add + Instruction::Sub && another_inst->getOperand(1) == val)
                                 {
-                                    std::cout << "Yes3" << std::endl;
+                                    //std::cout << "Yes3" << std::endl;
                                     ++two_inst_optimization_num;
                                     inst.replaceAllUsesWith(another_inst->getOperand(0));
                                     deleteInst.push_back(&inst);
