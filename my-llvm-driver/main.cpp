@@ -15,6 +15,7 @@
 
 #include "Driver/driver.h"
 #include "optimization/LoopSearchPass.hpp"
+#include "optimization/AvailExpr.hpp"
 #include "optimization/MyPasses.hpp"
 #include "optimization/FuncInfo.hpp"
 #include "optimization/LocalOpts.hpp"
