@@ -1,16 +1,5 @@
 int main(){
-	
-  int i;
-  int j;
-  int k;
-
-  i = 0 ;
-  j = 2;
-  k = 4;
-
-  if( i > j )
-  {
-    k = k + 1;
-  } 
+	float c=1.4+5.6;
+  float d=c+1.1;
   return 1;
 }
