@@ -13,5 +13,7 @@ int main()
     int val5 = x + 1;
     int val6 = val5 - 1;
     int val7 = val6 + 8;
-    return 0;
+
+    int temp = val1 + val2 + val3 + val4 + val5 + val6 + val7;
+    return temp;
 }

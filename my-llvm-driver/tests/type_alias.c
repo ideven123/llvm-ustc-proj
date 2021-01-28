@@ -2,24 +2,20 @@
 
 typedef struct stu1{
     int a;
-    int b;
-    int c;
 }temp1;
 
 typedef struct stu2
 {
     int a;
-    int b;
-    int c;
+    char b;
 }temp2;
 
 typedef struct stu3
 {
     int a;
-    int b;
-    int c;
+    char b;
+    float c;
 } temp3;
-
 
 temp1 t1;
 temp2 t2;
