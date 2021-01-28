@@ -21,7 +21,7 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/IRBuilder.h"
-#include "llvm/ExecutionEngine/MCJIT.h"
+//#include "llvm/ExecutionEngine/MCJIT.h"
 #include "llvm/Support/TargetSelect.h"
 #include <algorithm>
 #include <iostream>
@@ -78,6 +78,7 @@ namespace{
             std::map<Value *, float *> fGlobal;
             for (Instruction &instr : B) {//从基本块第一条指令开始遍历
                 bool allConst = false;
+                llvm::outs()<<"instr opcode:"<<instr.getOpcode()<<"\n";
                 if (instr.isBinaryOp()) {
                     Value *oper0,*oper1;
                     //auto opID = instr.getType();//getopcode?
@@ -96,19 +97,42 @@ namespace{
                             }
                         }
                     }
-                    /*
                     else if(oper0->getType()->isIntegerTy()){
                         if(auto constInt0=dyn_cast<ConstantInt>(oper0)){
                             if(auto constInt1=dyn_cast<ConstantInt>(oper1)){
                                 allConst=true;
-                                auto ans = compute(opID,constInt0,constInt1);
+                                auto ans = compute(opID,constInt0,constInt1,&instr);
                                 instr.replaceAllUsesWith(ans);
                             }
                         }
                     }
-                    */
                 }
+                if(instr.getOpcode()==llvm::Instruction::ICmp){
+                    Value *oper0, *oper1;
+                    //auto opID = cmpInst->getOpcode();
+                    oper0 = instr.getOperand(0);
+                    oper1 = instr.getOperand(1);
+                    //llvm::outs()<<"op0:";
+                    //oper0->printAsOperand(llvm::outs(),false);
+                    //llvm::outs()<<"\nop1:";
+                    //oper1->printAsOperand(llvm::outs(),false);
+                    //llvm::outs()<<"\n";
+                    if(auto constInt0=dyn_cast<ConstantInt>(oper0)){
+                        if(auto constInt1=dyn_cast<ConstantInt>(oper1)){
+                            allConst=true;
+                            auto ans = compare(constInt0,constInt1,&instr);
+                            //llvm::outs()<<"ans:";
+                            //ans->printAsOperand(llvm::outs(),false);
+                            //llvm::outs()<<ans->getType();
+                            //llvm::outs()<<"\n";
+                            //instr.printAsOperand(llvm::outs(),false);
+                            //llvm::outs()<<instr.getType();
+                            //llvm::outs()<<"\n";
 
+                            instr.replaceAllUsesWith(ans);
+                        }
+                    }
+                }
                 if (allConst) {
                     wait_delete.push_back(&instr);
                 }
@@ -125,25 +149,82 @@ namespace{
             float c_value2 = value2->getValue().convertToFloat();
             llvm::outs()<<"op1"<<c_value1<<"\n";
             llvm::outs()<<"op2"<<c_value2<<"\n";
-            IRBuilder<> builder(instr);
+            //IRBuilder<> builder(instr);
             switch (op) {
             case Instruction::FAdd:
-                return ConstantFP::get(builder.getFloatTy(),c_value1 + c_value2);
+                return ConstantFP::get(instr->getType(),c_value1 + c_value2);
                 break;
             case Instruction::FSub:
-                //return ConstantFP::get(llvm::Type::getFloatTy(Context),c_value1 - c_value2);
+                return ConstantFP::get(instr->getType(),c_value1 - c_value2);
                 break;
             case Instruction::FMul:
-                //return ConstantFP::get(llvm::Type::getFloatTy(Context),c_value1 * c_value2);
+                return ConstantFP::get(instr->getType(),c_value1 * c_value2);
                 break;
             case Instruction::FDiv:
-                //return ConstantFP::get(llvm::Type::getFloatTy(Context),c_value1 / c_value2);
+                return ConstantFP::get(instr->getType(),c_value1 / c_value2);
                 break;
             default:
                 return nullptr;
                 break;
             }
         }
+
+        Constant *compute(unsigned int op,ConstantInt *value1,ConstantInt *value2,Instruction* instr) {
+            int c_value1 = value1->getValue().getSExtValue();
+            int c_value2 = value2->getValue().getSExtValue();
+            llvm::outs()<<"op1"<<c_value1<<"\n";
+            llvm::outs()<<"op2"<<c_value2<<"\n";
+            //IRBuilder<> builder(instr);
+            switch (op) {
+            case Instruction::Add:
+                return ConstantInt::get(instr->getType(),c_value1 + c_value2);
+                break;
+            case Instruction::Sub:
+                return ConstantInt::get(instr->getType(),c_value1 - c_value2);
+                break;
+            case Instruction::Mul:
+                return ConstantInt::get(instr->getType(),c_value1 * c_value2);
+                break;
+            case Instruction::SDiv:
+                return ConstantInt::get(instr->getType(),(int)(c_value1 / c_value2));
+                break;
+            default:
+                return nullptr;
+                break;
+            }
+        }
+
+        Value *compare(ConstantInt *value1,ConstantInt *value2,Instruction *instr) {
+            int c_value1 = value1->getValue().getSExtValue();
+            int c_value2 = value2->getValue().getSExtValue();
+            //llvm::outs()<<"op1"<<c_value1<<"\n";
+            //llvm::outs()<<"op2"<<c_value2<<"\n";
+            auto cmpInst = static_cast<CmpInst *>(instr);
+            //IRBuilder<> builder(instr);
+            switch (cmpInst->getPredicate()) {
+            case llvm::CmpInst::Predicate::ICMP_SGE:
+                return ConstantInt::get(instr->getType(),c_value1 >= c_value2);
+                break;
+            case llvm::CmpInst::Predicate::ICMP_SGT:
+                return ConstantInt::get(instr->getType(),c_value1 > c_value2);
+                break;
+            case llvm::CmpInst::Predicate::ICMP_SLE:
+                return ConstantInt::get(instr->getType(),c_value1 <= c_value2);
+                break;
+            case llvm::CmpInst::Predicate::ICMP_SLT:
+                return ConstantInt::get(instr->getType(),c_value1 < c_value2);
+                break;
+            case llvm::CmpInst::Predicate::ICMP_EQ:
+                return ConstantInt::get(instr->getType(),c_value1 = c_value2);
+                break;
+            case llvm::CmpInst::Predicate::ICMP_NE:
+                return ConstantInt::get(instr->getType(),c_value1 != c_value2);
+                break;
+            default:
+                return nullptr;
+                break;
+            }
+        }//builder.getInt64Ty()
 
         void getAnalysisUsage(AnalysisUsage &AU) const override {
             AU.setPreservesCFG();

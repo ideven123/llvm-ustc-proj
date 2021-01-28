@@ -22,7 +22,7 @@
 #include "optimization/ActiveVars.hpp"
 #include "optimization/ConstPropagation.hpp"
 #include "optimization/Loopinvhoist.hpp"
-#include "optimization/AvailExpr.hpp"
+//#include "optimization/AvailExpr.hpp"
 using namespace llvm;
 using namespace clang;
 using namespace mDriver;
