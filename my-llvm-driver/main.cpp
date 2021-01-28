@@ -22,7 +22,6 @@
 #include "optimization/ActiveVars.hpp"
 #include "optimization/ConstPropagation.hpp"
 #include "optimization/Loopinvhoist.hpp"
-//#include "optimization/AvailExpr.hpp"
 using namespace llvm;
 using namespace clang;
 using namespace mDriver;
@@ -69,17 +68,16 @@ int main(int argc, const char **argv) {
   //内存到寄存器的分配
   TheDriver.addPass(createPromoteMemoryToRegisterPass());
   //基于LLVM IR的CFG信息和支配树信息查找给定Function代码中存在的所有回边(BackEdge)，每条回边代表代码中存在的一个自然循环
-  TheDriver.addPass(createLoopInvHoistPass());
+  
   TheDriver.addPass(createLSPass());
 
   //TheDriver.addPass(llvm::createConstantPropagationPass());
 
   //死代码删除,将转换为SSA格式后的LLVM IR中use_empty()返回值为真的指令从指令列表中删除(数据流分析)
-  //TheDriver.addPass(createmyDCEPass()); 
+  TheDriver.addPass(createmyDCEPass()); 
   
   //对当前Module所定义的函数数目进行计数(数据流分析)
   TheDriver.addPass(createmyGlobalPass());
-
 
   //加入必做部分的PASS，PASS代码 在LoopSearchPass.hpp文件中，后半部分
   TheDriver.addPass(createLoopSearchPass());
@@ -87,11 +85,16 @@ int main(int argc, const char **argv) {
   TheDriver.addPass(createFuncInfoPass());
   //活跃变量分析
   TheDriver.addPass(createLivenessPass());
+  //可用表达式分析
+  TheDriver.addPass(createGetAvailExpr());
+  //常量传播
   TheDriver.addPass(createConstProPagationPass());
+  //循环不变式外提
+  TheDriver.addPass(createLoopInvHoistPass());
   //强度削弱、连续变量优化、算术不变量优化
   TheDriver.addPass(createLocalOptsPass());
-  //可用表达式
-  TheDriver.addPass(createGetAvailExpr());
+ 
+  
   TheDriver.run();
   // TheDriver.printASTUnit();
   // Shutdown.

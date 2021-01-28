@@ -44,7 +44,7 @@ namespace {
                         WorkList.insert(OpI);           //将该指令插入WorkList
             }
             //print:将对象格式化到指定的缓冲区。如果成功，将返回格式化字符串的长度。如果缓冲区太小，则返回一个大于BufferSize的长度以供重试。
-            I->print(llvm::outs()); //??
+            I->print(llvm::outs()); //
             std::cout << " " << I->getOpcodeName() << std::endl;    //输出该指令的操作码
             I->eraseFromParent();                                   //将该指令从包含它的基本块中解除链接并删除它
             return true;    //成功删除一条死代码,返回真
@@ -129,11 +129,12 @@ namespace {
                     //std::cout << GI->getGlobalIdentifier() << std::endl;
                     llvm::outs() << GI->getName() << "\n";
                 }
-                //注意printf和scanf函数会引入全局变量，猜测应该是对应的格式化字符串
+                //注意printf和scanf函数会引入全局变量，应该是对应的格式化字符串
                 std::cout << "The number of global variable is " << num_of_globalVariable << "." << std::endl;
                 std::cout << "The type alias are as follows:" << std::endl;
                 for(auto i : M.getIdentifiedStructTypes()){
                     llvm::outs() << i->getStructName() << "\n";
+                    llvm::outs() << i->getNumContainedTypes() << "\n";
                 }
                 std::cout << "The number of type alias is " << M.getIdentifiedStructTypes().size() << "." << std::endl;
                 return true;
