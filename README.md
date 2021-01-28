@@ -14,6 +14,12 @@
     * [report.md](./answer/optional/report.md)
     * [report.pdf](./answer/optional/report.pdf)
 
+## PPT链接
+* 必做部分
+    * [必做.pptx](./ppt/必做.pptx)
+* 选做部分
+    * [选做.pptx](./ppt/选做.pptx)
+
 #### 介绍
 
 本项目提供[LLVM](https://llvm.org/)及相关编译基础设施的学习实践框架和选题。该项目由中国科学技术大学[张昱](http://staff.ustc.edu.cn/~yuzhang/)老师研究组[s4plus](https://s4plus.ustc.edu.cn/)设计和开发，旨在引导更多学生和社会人员学习和实践编译器相关知识，开展语言设计与实现、程序分析、编译优化等研发，让越来越多的人有能力运用程序语言基础提供可靠、高效的软件解决方案。
