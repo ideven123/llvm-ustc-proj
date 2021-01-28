@@ -263,7 +263,7 @@ namespace
                                 //如果是常数
                                 if (ConstantInt *val = dyn_cast<ConstantInt>(inst.getOperand(i)))
                                 {
-                                    //如果为求平方
+                                    //如果为乘2
                                     if (val->getZExtValue() == 2)
                                     {
                                         ++strength_reduction_num;

@@ -21,7 +21,7 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/IRBuilder.h"
-#include "llvm/ExecutionEngine/MCJIT.h"
+//#include "llvm/ExecutionEngine/MCJIT.h"
 #include "llvm/Support/TargetSelect.h"
 #include <algorithm>
 #include <iostream>
