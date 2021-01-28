@@ -4,7 +4,7 @@ int b;
 char c;
 
 int pqz(){
-    printf("pqz");
+    printf("123");
     int c;
     return 0;
 }

@@ -129,7 +129,7 @@ namespace {
                     //std::cout << GI->getGlobalIdentifier() << std::endl;
                     llvm::outs() << GI->getName() << "\n";
                 }
-                //注意printf和scanf函数会引入全局变量，猜测应该是对应的格式化字符串
+                //注意printf和scanf函数会引入全局变量，应该是对应的格式化字符串
                 std::cout << "The number of global variable is " << num_of_globalVariable << "." << std::endl;
                 std::cout << "The type alias are as follows:" << std::endl;
                 for(auto i : M.getIdentifiedStructTypes()){
