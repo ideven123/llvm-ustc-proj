@@ -10,15 +10,19 @@
 * 必做部分
     * [report.md](./answer/required/report.md)
     * [report.pdf](./answer/required/report.pdf)
+    * [reportv2.md](./answer/required/reportv2.md)
+    * [reportv2.pdf](./answer/required/reportv2.pdf)
 * 选做部分
     * [report.md](./answer/optional/report.md)
     * [report.pdf](./answer/optional/report.pdf)
-
+    * [reportv2.md](./answer/optional/reportv2.md)
+    * [reportv2.pdf](./answer/optional/reportv2.pdf)
 ## PPT链接
 * 必做部分
     * [必做.pptx](./ppt/必做.pptx)
 * 选做部分
     * [选做.pptx](./ppt/选做.pptx)
+    * [选做v2.pptx](./ppt/选做v2.pptx)
 
 #### 介绍
 
